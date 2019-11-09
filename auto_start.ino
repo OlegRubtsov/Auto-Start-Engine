@@ -1,4 +1,5 @@
-﻿  // https://github.com/OlegRubtsov/Auto-Start-Engine
+// https://github.com/OlegRubtsov/Auto-Start-Engine
+// версия 2019-11-09
 
 // Автозапуск авто на arduino и модеме m590e
 // запуск возможен двойным звонком на номер сим карты, оба звонка должны быть сделаны на 30 секунд
@@ -25,13 +26,13 @@
 #include <OneWire.h>
 
 // АППАРАТНАЯ КОНФИГУРАЦИЯ (ПОРТЫ)
-#define PORT_STARTER 9                       // d9 реле стартера
-#define PORT_SECPOWER 10                     // d10 реле цепи вторичного питания печка, фары и т.д.
-#define PORT_ENGINE 11                       // d11 реле зажигания
-#define PORT_IMMO 12                         // d12 реле обходчика иммобилайзера
-//#define PORT_BUZZER 5                        // d5 пищалка (для тестов)
-#define PORT_LED_STATUS 13                   // d13 светодиод (для тестов)
-#define PORT_MODEM_BOOT 17                   // порт A3 (или 17) управление модемом, инверсия через транзитор
+#define PORT_STARTER 9                              // d9 реле стартера
+#define PORT_SECPOWER 10                            // d10 реле цепи вторичного питания печка, фары и т.д.
+#define PORT_ENGINE 11                              // d11 реле зажигания
+#define PORT_IMMO 12                                // d12 реле обходчика иммобилайзера
+//#define PORT_BUZZER 5                             // d5 пищалка (для тестов)
+#define PORT_LED_STATUS 13                          // d13 светодиод (для тестов)
+#define PORT_MODEM_BOOT 17                          // порт A3 (или 17) управление модемом, инверсия через транзитор
 #define PORT_MODEM_TX 2                             // TXd модема = D2
 #define PORT_MODEM_RX 3                             // RXd модема = D3 
 #define PORT_INPUT_BATTERY A0                       // порт АЦП А0 (или 14) для контроля питания авто
@@ -112,14 +113,14 @@ void setup() {
   pinMode(PORT_IMMO, OUTPUT);                   //реле обходчика иммобилайзера
   digitalWrite(PORT_IMMO, LOW);                 //выкл. 
 
-  pinMode(PORT_INPUT_BATTERY, INPUT);                  // порт контроля заряда АКБ
-  pinMode(PORT_INPUT_STOP, INPUT);                     // порт контроля педали тормоза
-  pinMode(PORT_INPUT_ENGINE, INPUT);                   // порт контроля включенного зажигания для блокировки автозапуска при уже включенном зажигании
+  pinMode(PORT_INPUT_BATTERY, INPUT);           // порт контроля заряда АКБ
+  pinMode(PORT_INPUT_STOP, INPUT);              // порт контроля педали тормоза
+  pinMode(PORT_INPUT_ENGINE, INPUT);            // порт контроля включенного зажигания для блокировки автозапуска при уже включенном зажигании
 
-SetModem(1);  //Запуск модема
-//MsTimer2::set(100, timerInterupt);                // прерывания по таймеру, период 100 мс 
-//MsTimer2::start();                                // разрешение прерывания
-//left_start_try=3;                                 // ТЕСТ сразу производится запуск
+SetModem(1);                                    //Запуск модема
+//MsTimer2::set(100, timerInterupt);            // прерывания по таймеру, период 100 мс 
+//MsTimer2::start();                            // разрешение прерывания
+//left_start_try=3;                             // ТЕСТ сразу производится запуск
 }
 //==================================================================================================================================================================
 void loop() {
@@ -138,29 +139,12 @@ else { //если двигатель не запущен проверяем во
   else Do_shutdown();                                                       // если генератор работает = двигатель запущен, то отменяем автозапуск
   }
 }
+
 //========================================================================================================================================================
+
 void timerInterupt() {  // обработка прерывания 1 мс
 //if (DetectStop()) flag_stop_pressed = HIGH;// обработка нажатия педали СТОП
 }
-
-//==================================================================================================================================================================
-/*void SendSMS(String text){ //процедура отправки СМС
-if (index_master<255){
-  Serial.println("SMS send started to phone index: " + (String)index_master);
-  Serial.println("Sended SMS:\n" + (String)text);
-  Serial.println("Send to GSMport:" + "AT+CMGS=\"+" + (String)(masterPhone[index_master]) + Strind"\"");
-  gsm.print("AT+CMGS=\"+" + (String)(masterPhone[index_master]) + "\"");
-  //gsm.print("AT+CMGS=\"+"); 
-  //gsm.print((String)(masterPhone[index_master]));
-  //gsm.println("\"");
-  
-  delay22(500);
-  gsm.print(text);
-  delay22(500);
-  gsm.print((char)26);
-  delay22(500);
-  }
-}*/
 
 //===================================================================================
 
@@ -175,11 +159,14 @@ delay22(500);
 Serial.println("Sended SMS:");
 Serial.println(text);
 }
+
 //==================================================================================================================================================================
+
 void SendSMS(String text1){ //процедура отправки СМС
 if (index_master<255) 
   SendSMS(text1, masterPhone[index_master]);
 }
+
 //==================================================================================================================================================================
 // Функция запуска и осатановки модема
 void SetModem(bool stat){                    //1 - включить // 2 выключить
@@ -248,7 +235,7 @@ if (gsm.available()) { //если GSM модуль что-то послал на
 }    
 buf = ""; //очищаем буфер
 
-if (ring_counter==1 && millis()-ring_timer>DELAY_TO_WAITING_2ND_RING){ // если был один звонок за период сбросить период измерения
+if (ring_counter==1 && millis()-ring_timer>DELAY_TO_WAITING_2ND_RING){ // если был только один звонок за период сбросить период измерения
     ring_timer = 0;
     ring_counter = 0;
     if (engine_is_started==1) last_start_time = millis();             // продление времени запуска
@@ -257,9 +244,9 @@ if (ring_counter>1){                                                  // есл�
     ring_timer = 0;
     ring_counter = 0;
     //BeepNraz(2); 
-    if (left_start_try==0){ //СТАРТ ЗАПУСКА
+    if (left_start_try==0){                                           //СТАРТ ЗАПУСКА
       left_start_try=3;
-      Serial.println("START (2 RINGS)");
+      Serial.println("Start (2 RINGS)");
       } 
     }
 buf = ""; //очищаем 
@@ -270,7 +257,7 @@ buf.toLowerCase();                                          // преобраз�
 String tmp="";
 for (int i=0; i<COUNT_PHONE; i++) {
 tmp="p"+String(i);
-if (buf.indexOf(tmp)>-1){                                   // УСТАНОВИТЬ МАСТЕР НОМЕР i-ый, если найдена строка типа "pi"
+if (buf.indexOf(tmp)>-1){                                   // УСТАНОВИТЬ МАСТЕР НОМЕР i-ый, если найдена строка типа "p[индекс] [номер телефона]"
   GetPhoneFromString(buf, tmp, i);  
   Serial.println("set masterPhone"+String(i)+" = " + (String)masterPhone[i]); 
   for (int a = 0; a < 12; a++)
@@ -431,17 +418,26 @@ if (starter_time_setting>0) starter_time_local = starter_time_setting;        //
     starter_time_local = map(Temp(), 30, -25, ST_MIN, ST_MAX);                // автоподбор значения стартера
     starter_time_local = constrain(starter_time_local, ST_MIN, ST_MAX);       // ограничиваем время работы стартера  
   }
-digitalWrite(PORT_STARTER, HIGH);   Serial.println("STARTER ON");      // включаем стартер 
+digitalWrite(PORT_STARTER, HIGH);                                             // включаем стартер
+Serial.println("STARTER ON"); 
+      
 delay22(starter_time_local+300*(3-left_start_try));                           // продолжаем его держать включенным время starter_time_local
-                                           Serial.println("delay " + String (starter_time_local+200*(3-left_start_try)));
-digitalWrite(PORT_STARTER, LOW);    Serial.println("STARTER OFF");     // отключаем стартер 
-delay22(DELAY_BEFORE_DETECTING_START);     Serial.println("delay "+String(DELAY_BEFORE_DETECTING_START)); 
+Serial.println("delay " + String (starter_time_local+200*(3-left_start_try)));
+
+digitalWrite(PORT_STARTER, LOW);    
+Serial.println("STARTER OFF");                                                // отключаем стартер
+ 
+delay22(DELAY_BEFORE_DETECTING_START);                                        // задержка перед замером уровня напряжения (перед детекцией старта) 
+Serial.println("delay "+String(DELAY_BEFORE_DETECTING_START)); 
+
 if (VBatt()>U1_START) {                                                       // смотрим, что  зарядка пошла  
   last_start_time = millis();                                                 // запоминаем время запуска движка
-  digitalWrite(PORT_SECPOWER, HIGH); Serial.println("SECPOWER ON");    //включаем печку фары итд
+  digitalWrite(PORT_SECPOWER, HIGH);                                          //включаем печку фары итд
+  Serial.println("SECPOWER ON");           
   engine_is_started = 1;                                                      //Запоминаем что движок запущен
   left_start_try = 0;                                                         // завелся, дальше не пытаемся
-  if (engine_warm_time_setting>0) engine_warm_time_local = engine_warm_time_setting;          // устанавливаем переменную подсчета времени прогрева
+  if (engine_warm_time_setting>0) 
+    engine_warm_time_local = engine_warm_time_setting;                        // устанавливаем переменную подсчета времени прогрева
   else {                                                                      // здесь устанавливаем автоматическое значение по темпаратуре
     engine_warm_time_local = map(Temp(), 30, -25, 5, 30);                     // автоподбор значения прогрева
     engine_warm_time_local = constrain(engine_warm_time_local, 5, EWT_MAX);   // ограничиваем таймер в зачениях от 5 до EWT_MAX минут 
@@ -450,16 +446,25 @@ if (VBatt()>U1_START) {                                                       //
   if (sms_answer==1) SendSMS(Info());
   }
 else{ // не завелся
-  digitalWrite(PORT_SECPOWER, LOW);   Serial.println("SECPOWER OFF");  //выключаем печку фары и тд
-  delay22(500);                              Serial.println("delay(500)");
-  digitalWrite(PORT_ENGINE, LOW);     Serial.println("ENGINE OFF");    //выключаем зажигание чтобы разблокировать реле стартера
-  digitalWrite(PORT_IMMO, LOW);       Serial.println("IMMO OFF");      //выключаем обходчик иммобилайзера
-  engine_is_started = 0;                                                      //Запоминаем что движок не запущен
+  digitalWrite(PORT_SECPOWER, LOW);                                    //выключаем печку фары и тд
+  Serial.println("SECPOWER OFF");  
+  delay22(500);                       
+  Serial.println("delay(500)");
+  digitalWrite(PORT_ENGINE, LOW);                                      //выключаем зажигание чтобы разблокировать реле стартера 
+  Serial.println("ENGINE OFF");    
+  engine_is_started = 0;                                               //Запоминаем что движок не запущен
   Serial.println("NOT STARTED\n"+Info());
-  if (sms_answer==1 && left_start_try==1) SendSMS(Info());                        // отправка СМС о неудачном запуске
-  if (left_start_try>1) delay22(DELAY_BEFORE_DETECTING_START);                // пауза между запусками
+  if (sms_answer==1 && left_start_try==1) 
+    SendSMS(Info());                                                   // отправка СМС о неудачном запуске
+  if (left_start_try>1) 
+    delay22(DELAY_BEFORE_DETECTING_START);                             // пауза между запусками
   }
-if (left_start_try>0) left_start_try--;                                       // уменьшаем число попыток на одну состоявшуюся
+
+if (digitalRead(PORT_IMMO)){
+  digitalWrite(PORT_IMMO, LOW);                                          // выключаем обходчик иммобилайзера
+  Serial.println("IMMO OFF"); 
+}
+if (left_start_try>0) left_start_try--;                                // уменьшаем число попыток на одну состоявшуюся
 }
 //========================================================================================================================================================
 void Do_shutdown (){
@@ -472,6 +477,10 @@ if (digitalRead(PORT_ENGINE)){
   digitalWrite(PORT_ENGINE, LOW);       //выключаем зажигание
   Serial.println("ENGINE LOW");
   }
+if (digitalRead(PORT_IMMO)){
+  digitalWrite(PORT_IMMO, LOW);                                          // выключаем обходчик иммобилайзера
+  Serial.println("IMMO OFF"); 
+}
 left_start_try = 0;
 engine_is_started = 0;                  // двигатель выключили 
 last_start_time = 0;                    // обнулили время включения
